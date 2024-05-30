@@ -1,134 +1,136 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { Plugin, MarkdownPostProcessorContext } from 'obsidian';
+import { Decoration, DecorationSet, ViewUpdate, PluginValue, EditorView, ViewPlugin } from "@codemirror/view";
+import { RangeSetBuilder } from '@codemirror/state';
+import * as Prism from 'prismjs';
+import 'prismjs/components/prism-markup';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-css';
+import 'prism-svelte';
 
-// Remember to rename these classes and interfaces!
+export default class SvelteSyntaxHighlightingPlugin extends Plugin {
+    async onload() {
+        console.log('Loading Svelte Syntax Highlighting Plugin');
 
-interface MyPluginSettings {
-	mySetting: string;
+        // Svelte 구문 강조 추가
+        this.addSvelteSyntaxHighlighting();
+
+        //console.log(Prism.languages);
+
+        // MarkdownPostProcessor 등록
+        this.registerMarkdownPostProcessor((element: HTMLElement, context: MarkdownPostProcessorContext) => {
+            element.querySelectorAll('pre > code.language-svelte').forEach((block) => {
+                Prism.highlightElement(block);
+            });
+            
+            console.log(element);
+        });
+
+        // this.registerMarkdownPostProcessor(
+        //     this.registerMarkdownCodeBlockProcessor("svelte", (sorurce:string, el:HTMLElement, ctx: MarkdownPostProcessorContext) => {
+        //         el.querySelectorAll('pre > code.language-svelte').forEach((block) => {
+        //             Prism.highlightElement(block);
+        //         });
+        //         console.log(el);
+        // }));
+
+        // CodeMirror 편집 모드에서 구문 강조를 위한 뷰 플러그인 등록
+        this.registerEditorExtension(ViewPlugin.fromClass(SveltePlugin, {
+            decorations: (plugin) => plugin.decorations
+        }));
+    }
+
+    onunload() {
+        console.log('Unloading Svelte Syntax Highlighting Plugin');
+    }
+
+    addSvelteSyntaxHighlighting() {
+        if (!Prism.languages.svelte) {
+            Prism.languages.svelte = {
+                ...Prism.languages.markup,
+                'script': {
+                    pattern: /<script[\s\S]*?>[\s\S]*?<\/script>/i,
+                    inside: {
+                        'language-javascript': {
+                            pattern: /(<script[\s\S]*?>)[\s\S]*?(<\/script>)/i,
+                            lookbehind: true,
+                            inside: Prism.languages.javascript
+                        }
+                    }
+                },
+                'style': {
+                    pattern: /<style[\s\S]*?>[\s\S]*?<\/style>/i,
+                    inside: {
+                        'language-css': {
+                            pattern: /(<style[\s\S]*?>)[\s\S]*?(<\/style>)/i,
+                            lookbehind: true,
+                            inside: Prism.languages.css
+                        }
+                    }
+                }
+            };
+        }
+    }
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
-}
+class SveltePlugin implements PluginValue {
+    decorations: DecorationSet;
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+    constructor(view: EditorView) {
+        this.decorations = this.buildDecorations(view);
+    }
 
-	async onload() {
-		await this.loadSettings();
+    update(update: ViewUpdate) {
+        if (update.docChanged || update.viewportChanged) {
+            this.decorations = this.buildDecorations(update.view);
+        }
+    }
 
-		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
-			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
-		});
-		// Perform additional things with the ribbon
-		ribbonIconEl.addClass('my-plugin-ribbon-class');
+    destroy() {
+        // 필요한 경우 자원 정리 코드 추가
+    }
 
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status Bar Text');
+    buildDecorations(view: EditorView): DecorationSet {
+        const builder = new RangeSetBuilder<Decoration>();
 
-		// This adds a simple command that can be triggered anywhere
-		this.addCommand({
-			id: 'open-sample-modal-simple',
-			name: 'Open sample modal (simple)',
-			callback: () => {
-				new SampleModal(this.app).open();
-			}
-		});
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: 'sample-editor-command',
-			name: 'Sample editor command',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				console.log(editor.getSelection());
-				editor.replaceSelection('Sample Editor Command');
-			}
-		});
-		// This adds a complex command that can check whether the current state of the app allows execution of the command
-		this.addCommand({
-			id: 'open-sample-modal-complex',
-			name: 'Open sample modal (complex)',
-			checkCallback: (checking: boolean) => {
-				// Conditions to check
-				const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					// If checking is true, we're simply "checking" if the command can be run.
-					// If checking is false, then we want to actually perform the operation.
-					if (!checking) {
-						new SampleModal(this.app).open();
-					}
+        for (const { from, to } of view.visibleRanges) {
+            const text = view.state.doc.sliceString(from, to);
+            const codeBlockRegex = /```svelte([\s\S]*?)```/g;
+            let match;
 
-					// This command will only show up in Command Palette when the check function returns true
-					return true;
-				}
-			}
-		});
+            while ((match = codeBlockRegex.exec(text.toLocaleLowerCase())) !== null) {
+                console.log(1);
+                const code = match[1];
+                const start = from + match.index + 9; // 9는 "```svelte"의 길이
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+                // Prism.highlight를 사용하여 코드 하이라이팅
+                const highlighted = Prism.highlight(code, Prism.languages.svelte, 'svelte');
+                const tempDiv = document.createElement("div");
+                tempDiv.innerHTML = highlighted;
 
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
-		});
+                let pos = start;
+                tempDiv.childNodes.forEach((child) => {
+                    if (child.nodeType === Node.TEXT_NODE) {
+                        const textNode = child as Text;
+                        if (textNode.textContent) {
+                            pos += textNode.textContent.length;
+                        }
+                    } else if (child.nodeType === Node.ELEMENT_NODE) {
+                        const elementNode = child as HTMLElement;
+                        const textContent = elementNode.innerText;
+                        if (textContent) {
+                            const className = elementNode.className.split(" ").join(".");
+                            const deco = Decoration.mark({
+                                class: className,
+                                tagName: elementNode.tagName.toLowerCase()
+                            });
+                            builder.add(pos, pos + textContent.length, deco);
+                            pos += textContent.length;
+                        }
+                    }
+                });
+            }
+        }
 
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
-	}
-
-	onunload() {
-
-	}
-
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-	}
-
-	async saveSettings() {
-		await this.saveData(this.settings);
-	}
-}
-
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
-	}
-}
-
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
-
-	constructor(app: App, plugin: MyPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
-
-	display(): void {
-		const {containerEl} = this;
-
-		containerEl.empty();
-
-		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
-				.onChange(async (value) => {
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
-	}
+        return builder.finish();
+    }
 }
