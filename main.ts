@@ -1,78 +1,85 @@
-import { Plugin, MarkdownPostProcessorContext } from 'obsidian';
-import { Decoration, DecorationSet, ViewUpdate, PluginValue, EditorView, ViewPlugin } from "@codemirror/view";
+import { MarkdownPostProcessor, MarkdownPostProcessorContext, Plugin, loadPrism } from 'obsidian';
+import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from '@codemirror/view';
 import { RangeSetBuilder } from '@codemirror/state';
-import * as Prism from 'prismjs';
-import 'prismjs/components/prism-markup';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-css';
 import 'prism-svelte';
 
+let globalPrism: any;
+
 export default class SvelteSyntaxHighlightingPlugin extends Plugin {
+    private markdownProcessor: MarkdownPostProcessor;
+
     async onload() {
         console.log('Loading Svelte Syntax Highlighting Plugin');
 
-        // Svelte 구문 강조 추가
-        this.addSvelteSyntaxHighlighting();
+        try {
+            // Prism.js 로드
+            globalPrism = await loadPrism();
+    
+            // Svelte 구문 강조 설정
+            if (!globalPrism.languages.svelte) {
+                console.log("add svelte to prismjs");
 
-        //console.log(Prism.languages);
+                globalPrism.languages.svelte = {
+                    ...globalPrism.languages.markup,
+                    'script': {
+                        pattern: /<script[\s\S]*?>[\s\S]*?<\/script>/i,
+                        inside: {
+                            'language-javascript': {
+                                pattern: /(<script[\s\S]*?>)[\s\S]*?(<\/script>)/i,
+                                lookbehind: true,
+                                inside: globalPrism.languages.javascript
+                            }
+                        }
+                    },
+                    'style': {
+                        pattern: /<style[\s\S]*?>[\s\S]*?<\/style>/i,
+                        inside: {
+                            'language-css': {
+                                pattern: /(<style[\s\S]*?>)[\s\S]*?(<\/style>)/i,
+                                lookbehind: true,
+                                inside: globalPrism.languages.css
+                            }
+                        }
+                    }
+                };
+            }
 
-        // MarkdownPostProcessor 등록
-        this.registerMarkdownPostProcessor((element: HTMLElement, context: MarkdownPostProcessorContext) => {
-            element.querySelectorAll('pre > code.language-svelte').forEach((block) => {
-                Prism.highlightElement(block);
+            // Markdown Post Processor 등록 (읽기 모드)
+            this.markdownProcessor = this.registerMarkdownPostProcessor((element: HTMLElement, context: MarkdownPostProcessorContext) => {
+                element.querySelectorAll('pre > code.language-svelte').forEach((block) => {
+                    globalPrism.highlightElement(block);
+                });
             });
-            
-            console.log(element);
-        });
 
-        // this.registerMarkdownPostProcessor(
-        //     this.registerMarkdownCodeBlockProcessor("svelte", (sorurce:string, el:HTMLElement, ctx: MarkdownPostProcessorContext) => {
-        //         el.querySelectorAll('pre > code.language-svelte').forEach((block) => {
-        //             Prism.highlightElement(block);
-        //         });
-        //         console.log(el);
-        // }));
+            // CodeMirror 플러그인 등록 (편집 모드)
+            this.registerEditorExtension(ViewPlugin.fromClass(SvelteEditorPlugin, {
+                decorations: (plugin) => plugin.decorations,
+            }));
 
-        // CodeMirror 편집 모드에서 구문 강조를 위한 뷰 플러그인 등록
-        this.registerEditorExtension(ViewPlugin.fromClass(SveltePlugin, {
-            decorations: (plugin) => plugin.decorations
-        }));
+        } catch (error) {
+            console.log('Faild to load Prism: ', error);
+        }
+
+        console.log(globalPrism);
     }
 
     onunload() {
         console.log('Unloading Svelte Syntax Highlighting Plugin');
-    }
 
-    addSvelteSyntaxHighlighting() {
-        if (!Prism.languages.svelte) {
-            Prism.languages.svelte = {
-                ...Prism.languages.markup,
-                'script': {
-                    pattern: /<script[\s\S]*?>[\s\S]*?<\/script>/i,
-                    inside: {
-                        'language-javascript': {
-                            pattern: /(<script[\s\S]*?>)[\s\S]*?(<\/script>)/i,
-                            lookbehind: true,
-                            inside: Prism.languages.javascript
-                        }
-                    }
-                },
-                'style': {
-                    pattern: /<style[\s\S]*?>[\s\S]*?<\/style>/i,
-                    inside: {
-                        'language-css': {
-                            pattern: /(<style[\s\S]*?>)[\s\S]*?(<\/style>)/i,
-                            lookbehind: true,
-                            inside: Prism.languages.css
-                        }
-                    }
-                }
-            };
+        // Prism.js에서 Svelte 구문 제거
+        if (globalPrism.languages.svelte) {
+            console.log("remove svelte to prismjs");
+            delete globalPrism.languages.svelte;
         }
+
+        // Markdown Post Processor 제거
+        this.app.workspace.off('markdown-post-process', this.markdownProcessor);
+
+        console.log(globalPrism);
     }
 }
 
-class SveltePlugin implements PluginValue {
+class SvelteEditorPlugin {
     decorations: DecorationSet;
 
     constructor(view: EditorView) {
@@ -97,13 +104,12 @@ class SveltePlugin implements PluginValue {
             const codeBlockRegex = /```svelte([\s\S]*?)```/g;
             let match;
 
-            while ((match = codeBlockRegex.exec(text.toLocaleLowerCase())) !== null) {
-                console.log(1);
+            while ((match = codeBlockRegex.exec(text.toLowerCase())) !== null) {
                 const code = match[1];
                 const start = from + match.index + 9; // 9는 "```svelte"의 길이
 
                 // Prism.highlight를 사용하여 코드 하이라이팅
-                const highlighted = Prism.highlight(code, Prism.languages.svelte, 'svelte');
+                const highlighted = globalPrism.highlight(code, globalPrism.languages.svelte, 'svelte');
                 const tempDiv = document.createElement("div");
                 tempDiv.innerHTML = highlighted;
 
