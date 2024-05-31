@@ -1,15 +1,32 @@
 {
-	"name": "obsidian-sample-plugin",
-	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"name": "obsidian-svelte-syntax-highlighter",
+	"version": "0.1.0",
+	"description": "This plugin adds Svelte syntax highlighter to Obsidian. (https://obsidian.md)",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
-	"keywords": [],
-	"author": "",
+	"keywords": [
+		"obsidian",
+		"svelte",
+		"plugin"
+	],
+	"author": {
+		"name": "typhoon-kim",
+		"email": "typh007.kim@gmail.com",
+		"url": "https://github.com/typhoon-kim"
+	},
+	"homepage": "https://typhoon-kim.github.io/obsidian-svelte-syntax-highlighter/",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/typhoon-kim/obsidian-svelte-syntax-highlighter"
+	},
+	"bugs": {
+		"url": "https://github.com/typhoon-kim/obsidian-svelte-syntax-highlighter/issues",
+		"email": "typh007.kim@gmail.com"
+	},
 	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^16.11.6",
@@ -20,5 +37,11 @@
 		"obsidian": "latest",
 		"tslib": "2.4.0",
 		"typescript": "4.7.4"
+	},
+	"dependencies": {
+		"@codemirror/language": "^6.10.1",
+		"@codemirror/state": "^6.4.1",
+		"@codemirror/view": "^6.26.3",
+		"prism-svelte": "^0.5.0"
 	}
 }
