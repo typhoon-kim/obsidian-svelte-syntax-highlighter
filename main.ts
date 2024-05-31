@@ -1,5 +1,7 @@
+import { App, Plugin, PluginManifest } from 'obsidian';
 import loadPrismWithSvelte from 'loadPrismWithSvelte';
-import { App, MarkdownPostProcessorContext, Plugin, PluginManifest } from 'obsidian';
+import SvelteHighlight from 'svelteHighlight';
+import { ViewPlugin } from '@codemirror/view';
 
 export default class SvelteSyntaxHighlightingPlugin extends Plugin {
     obsidianPrism: any;
@@ -13,14 +15,26 @@ export default class SvelteSyntaxHighlightingPlugin extends Plugin {
             console.log('Loading Svelte Syntax Highlighting Plugin');
             this.obsidianPrism = await loadPrismWithSvelte();
 
-            console.log(this.obsidianPrism);
-
-            // Markdown Post Processor 등록 (읽기 모드)
-            this.registerMarkdownPostProcessor((element: HTMLElement, context: MarkdownPostProcessorContext) => {
-                element.querySelectorAll('pre > code.language-svelte').forEach((block) => {
+            // 읽기 모드에서 Svelte 구문 강조 설정
+            this.registerMarkdownPostProcessor((el, ctx) => {
+                el.querySelectorAll('pre > code.language-svelte').forEach((block) => {
                     this.obsidianPrism.highlightElement(block);
                 });
             });
+
+            // 편집 모드에서 Svelte 구문 강조 설정
+            this.registerMarkdownCodeBlockProcessor('svelte', (source, el, ctx) => {
+                const pre = document.createElement('pre');
+                const code = document.createElement('code');
+                code.className = 'language-svelte';
+                code.textContent = source;
+                pre.appendChild(code);
+                el.appendChild(pre);
+
+                this.obsidianPrism.highlightElement(code);
+            });
+
+            //this.registerEditorExtension(ViewPlugin.fromClass(SvelteHighlight, { decorations: (plugin) => plugin.decorations }));
 
         } catch (error) {
             console.log('Failed to load Prism: ', error);
