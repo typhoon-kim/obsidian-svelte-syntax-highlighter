@@ -32,7 +32,7 @@ export default class SvelteHighlight implements PluginValue {
         }
 
         const text = view.state.doc.toString(); // 전체 문서의 텍스트
-        const regex = /```svelte(?:\s+[^\n]+)?\n([\s\S]*?)\n```/gi; // svelte code block
+        const regex = /```svelte(?:[\s:!?.;,@%&(){}[\]<>*~]*)([\s\S]*?)\n```/gi // svelte code block
 
         let match;
         while ((match = regex.exec(text)) !== null) {

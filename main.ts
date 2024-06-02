@@ -1,6 +1,6 @@
 import { App, Plugin, PluginManifest } from 'obsidian';
 import loadPrismWithSvelte from 'loadPrismWithSvelte';
-import SvelteHighlight from 'svelteHighlight';
+import SvelteHighlight from 'svelteHighlighter';
 import { ViewPlugin } from '@codemirror/view';
 
 export default class SvelteSyntaxHighlightingPlugin extends Plugin {
@@ -32,7 +32,7 @@ export default class SvelteSyntaxHighlightingPlugin extends Plugin {
             );
 
         } catch (error) {
-            console.log('Failed to load Prism: ', error);
+            console.error('Failed to load Prism: ', error);
         }
     }
 
@@ -42,7 +42,6 @@ export default class SvelteSyntaxHighlightingPlugin extends Plugin {
         // Prism.js에서 Svelte 구문 제거
         if (this.obsidianPrism && this.obsidianPrism.languages.svelte) {
             delete this.obsidianPrism.languages.svelte;
-            console.log("Removed Svelte from Prism.js");
         }
     }
 }
