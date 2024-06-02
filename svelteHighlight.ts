@@ -37,7 +37,7 @@ export default class SvelteHighlight implements PluginValue {
         let match;
         while ((match = regex.exec(text)) !== null) {
             const codeBlock = match[0];
-            const highlighted = this.prism.highlight(codeBlock, this.prism.languages.svelte);
+            const highlighted = this.prism.highlight(codeBlock, this.prism.languages.svelte, "svelte");
 
             const blockStart = match.index; // 코드 블록 내의 시작 인덱스 계산
             this.applyHighlighting(highlighted, blockStart, builder);
