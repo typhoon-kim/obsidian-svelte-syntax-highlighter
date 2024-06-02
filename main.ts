@@ -23,18 +23,13 @@ export default class SvelteSyntaxHighlightingPlugin extends Plugin {
             });
 
             // 편집 모드에서 Svelte 구문 강조 설정
-            this.registerMarkdownCodeBlockProcessor('svelte', (source, el, ctx) => {
-                const pre = document.createElement('pre');
-                const code = document.createElement('code');
-                code.className = 'language-svelte';
-                code.textContent = source;
-                pre.appendChild(code);
-                el.appendChild(pre);
-
-                this.obsidianPrism.highlightElement(code);
-            });
-
-            //this.registerEditorExtension(ViewPlugin.fromClass(SvelteHighlight, { decorations: (plugin) => plugin.decorations }));
+            this.registerEditorExtension(
+                ViewPlugin.fromClass(
+                    SvelteHighlight, { 
+                        decorations: (plugin) => plugin.decorations,
+                    }
+                )
+            );
 
         } catch (error) {
             console.log('Failed to load Prism: ', error);
