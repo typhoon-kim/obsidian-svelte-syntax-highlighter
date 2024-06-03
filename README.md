@@ -51,7 +51,7 @@ To use the Svelte Syntax Highlighter, simply create a code block with `svelte` a
 
 The plugin will automatically highlight the syntax of the Svelte code block.
 
-![screenshot](https://typhoon-kim.github.io/obsidian-svelte-syntax-highlighter/blob/screenshot.gif)
+![screenshot](screenshot.gif)
 
 ## Development
 

@@ -52,7 +52,7 @@ Svelte Syntax Highlighter를 사용하려면 `svelte` 언어 식별자를 사용
 
 플러그인은 Svelte 코드 블록의 구문을 자동으로 강조합니다.
 
-![screenshot](https://typhoon-kim.github.io/obsidian-svelte-syntax-highlighter/blob/screenshot.gif)
+![screenshot](screenshot.gif)
 
 ## 개발
 
