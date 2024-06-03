@@ -47,8 +47,9 @@ export default class SvelteHighlight implements PluginValue {
     }
 
     applyHighlighting(highlighted: string, blockStart: number, builder: RangeSetBuilder<Decoration>) {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = highlighted;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(highlighted, "text/html");
+        const tempEl = doc.body;
 
         let currentIndex = blockStart;
 
@@ -74,7 +75,7 @@ export default class SvelteHighlight implements PluginValue {
             }
         };
 
-        tempDiv.childNodes.forEach((child) => {
+        tempEl.childNodes.forEach((child) => {
             traverse(child);
         });
 
