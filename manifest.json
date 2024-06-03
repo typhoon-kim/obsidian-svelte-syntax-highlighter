@@ -1,11 +1,11 @@
 {
-	"id": "obsidian-svelte-syntax-highlighter-plugin",
+	"id": "svelte-syntax-highlighter",
 	"name": "Svelte Syntax Highlighter",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "This plugin adds Svelte syntax highlighting to Obsidian.",
 	"author": "Typhoon-Kim",
-	"authorUrl": "https://github.com/typhoon-kim/obsidian-svelte-syntax-highlighter",
+	"authorUrl": "https://github.com/typhoon-kim",
 	"fundingUrl": "https://github.com/sponsors/typhoon-kim",
 	"isDesktopOnly": false
 }
