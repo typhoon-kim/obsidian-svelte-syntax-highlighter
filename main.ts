@@ -1,14 +1,10 @@
-import { App, Plugin, PluginManifest } from 'obsidian';
+import { Plugin } from 'obsidian';
 import loadPrismWithSvelte from 'loadPrismWithSvelte';
 import SvelteHighlight from 'svelteHighlighter';
 import { ViewPlugin } from '@codemirror/view';
 
 export default class SvelteSyntaxHighlightingPlugin extends Plugin {
     obsidianPrism: any;
-
-    constructor(app: App, manifest: PluginManifest) {
-        super(app, manifest);
-    }
 
     async onload() {
         try {
@@ -30,6 +26,8 @@ export default class SvelteSyntaxHighlightingPlugin extends Plugin {
                     }
                 )
             );
+
+            this.app.workspace.updateOptions();
 
         } catch (error) {
             console.error('Failed to load Prism: ', error);
