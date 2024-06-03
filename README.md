@@ -9,9 +9,9 @@ English | [한국어](https://typhoon-kim.github.io/obsidian-svelte-syntax-highl
 [![downloads](https://badgen.net/npm/dt/obsidian-svelte-syntax-highlighter)](https://www.npmjs.com/package/obsidian-svelte-syntax-highlighter)
 [![jsDeliver](https://data.jsdelivr.com/v1/package/npm/obsidian-svelte-syntax-highlighter/badge)](https://www.jsdelivr.com/package/npm/obsidian-svelte-syntax-highlighter)
 
-This plug-in provides syntax highlighting for the [`Svelte`](https://svelte.dev/) code block in [`Obsidian`](https://obsidian.md/).
-
-It started with the simple idea of adding an identifier for the Svelte syntax to the Prism object of Obsidian. Don't use this plug-in when [Prism.js](https://prismjs.com/) supports syntax highlighting for Svelte in the future and Obsidian officially supports it!
+This plug-in provides syntax highlighting for the [`Svelte`](https://svelte.dev/) code block in [`Obsidian`](https://obsidian.md/).  
+It started with the simple idea of adding an identifier for the Svelte syntax to the Prism object of Obsidian.  
+Don't use this plug-in when [Prism.js](https://prismjs.com/) supports syntax highlighting for Svelte in the future and Obsidian officially supports it!
 
 ## Features
 
@@ -22,7 +22,7 @@ It started with the simple idea of adding an identifier for the Svelte syntax to
 
 ### From Obsidian
 
-If you can't find it in the community plug-in, please install it [manually](#Manual Installation).
+If you can't find it in the community plug-in, please install it [manually](#manual-installation).
 
 1. Open Obsidian.
 2. Go to `Settings` > `Community plugins`.
