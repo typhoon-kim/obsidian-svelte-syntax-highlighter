@@ -5,9 +5,9 @@ English | [한국어](https://typhoon-kim.github.io/obsidian-svelte-syntax-highl
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/typhoon-kim/obsidian-svelte-syntax-highlighter)](https://github.com/typhoon-kim/obsidian-svelte-syntax-highlighter/releases)
 [![GitHub issues](https://img.shields.io/github/issues/typhoon-kim/obsidian-svelte-syntax-highlighter)](https://github.com/typhoon-kim/obsidian-svelte-syntax-highlighter/issues)
 
-[![npm](https://badgen.net/npm/v/@typh007/obsidian-svelte-highlighter)](https://www.npmjs.com/package/@typh007/obsidian-svelte-highlighter)
-[![downloads](https://badgen.net/npm/dt/@typh007/obsidian-svelte-highlighter)](https://www.npmjs.com/package/@typh007/obsidian-svelte-highlighter)
-[![jsDeliver](https://data.jsdelivr.com/v1/package/npm/@typh007/obsidian-svelte-highlighter/badge)](https://www.jsdelivr.com/package/npm/@typh007/obsidian-svelte-highlighter)
+[![npm](https://badgen.net/npm/v/obsidian-svelte-syntax-highlighter)](https://www.npmjs.com/package/obsidian-svelte-syntax-highlighter)
+[![downloads](https://badgen.net/npm/dt/obsidian-svelte-syntax-highlighter)](https://www.npmjs.com/package/obsidian-svelte-syntax-highlighter)
+[![jsDeliver](https://data.jsdelivr.com/v1/package/npm/obsidian-svelte-syntax-highlighter/badge)](https://www.jsdelivr.com/package/npm/obsidian-svelte-syntax-highlighter)
 
 This plug-in provides syntax highlighting for the [`Svelte`](https://svelte.dev/) code block in [`Obsidian`](https://obsidian.md/).
 

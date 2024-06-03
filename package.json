@@ -1,5 +1,5 @@
 {
-	"name": "svelte-syntax-highlighter",
+	"name": "obsidian-svelte-syntax-highlighter",
 	"version": "1.0.0",
 	"description": "This plugin adds Svelte syntax highlighter to Obsidian. (https://obsidian.md)",
 	"main": "main.js",

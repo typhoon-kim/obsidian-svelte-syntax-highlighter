@@ -5,9 +5,9 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/typhoon-kim/obsidian-svelte-syntax-highlighter)](https://github.com/typhoon-kim/obsidian-svelte-syntax-highlighter/releases)
 [![GitHub issues](https://img.shields.io/github/issues/typhoon-kim/obsidian-svelte-syntax-highlighter)](https://github.com/typhoon-kim/obsidian-svelte-syntax-highlighter/issues)
 
-[![npm 버전](https://badgen.net/npm/v/@typh007/obsidian-svelte-highlighter)](https://www.npmjs.com/package/@typh007/obsidian-svelte-highlighter)
-[![다운로드](https://badgen.net/npm/dt/@typh007/obsidian-svelte-highlighter)](https://www.npmjs.com/package/@typh007/obsidian-svelte-highlighter)
-[![jsDeliver](https://data.jsdelivr.com/v1/package/npm/@typh007/obsidian-svelte-highlighter/badge)](https://www.jsdelivr.com/package/npm/@typh007/obsidian-svelte-highlighter)
+[![npm 버전](https://badgen.net/npm/v/obsidian-svelte-syntax-highlighter)](https://www.npmjs.com/package/obsidian-svelte-syntax-highlighter)
+[![다운로드](https://badgen.net/npm/dt/obsidian-svelte-syntax-highlighter)](https://www.npmjs.com/package/obsidian-svelte-syntax-highlighter)
+[![jsDeliver](https://data.jsdelivr.com/v1/package/npm/obsidian-svelte-syntax-highlighter/badge)](https://www.jsdelivr.com/package/npm/obsidian-svelte-syntax-highlighter)
 
 [`Obsidian`](https://obsidian.md/)에서 [`Svelte`](https://svelte.dev/) 코드 블록에 대한 구문 강조를 제공하는 플러그인 입니다.
 Obsidian의 프리즘 객체에 Svelte 구문에 대한 식별자를 추가하는 간단한 아이디어에서 출발하였습니다. 추후 [Prism.js](https://prismjs.com/)에서 Svelte에 대한 구문강조가 지원되고 Obsidian에서 이를 공식적으로 지원하게 되면 이 플러그인을 사용하지 마세요!
